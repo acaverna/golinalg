@@ -115,3 +115,83 @@ func TestMatrixHadamardProduct(t *testing.T) {
 	}
 
 }
+
+func TestScalarTimesMatrix(t *testing.T) {
+
+	var (
+		rows = rand.Intn(1000)
+		cols = rand.Intn(1000)
+	)
+
+	base := float64(rand.Intn(1000))
+	size := rows * cols
+
+	var elementsA []float64
+	for i := 0; i < size; i++ {
+		elementsA = append(elementsA, rand.Float64()*base)
+	}
+	a := CreateMatrix(rows, cols, elementsA)
+
+	s := rand.Float64() * base
+
+	la := CreateLinAlg()
+	c := la.STimes(s, a)
+
+	if c.Rows != a.Rows || c.Cols != a.Cols {
+		t.Errorf("The dimensions of A matrix and C matrix is wrong!")
+	}
+
+	i := rand.Intn(rows)
+	j := rand.Intn(cols)
+
+	value := s * a.Get(i, j)
+	if c.Get(i, j) != value {
+		t.Errorf("Wrong value on C(i,j): Got %f but expected %f!", c.Get(i, j), value)
+	}
+
+}
+
+func TestMatrixDot(t *testing.T) {
+
+	var (
+		rows = rand.Intn(1000)
+		cols = rand.Intn(1000)
+		k    = rand.Intn(1000)
+	)
+
+	base := float64(rand.Intn(1000))
+	sizeA := rows * k
+
+	var elementsA []float64
+	for i := 0; i < sizeA; i++ {
+		elementsA = append(elementsA, rand.Float64()*base)
+	}
+	a := CreateMatrix(rows, k, elementsA)
+
+	sizeB := k * cols
+	var elementsB []float64
+	for i := 0; i < sizeB; i++ {
+		elementsB = append(elementsB, rand.Float64()*base)
+	}
+	b := CreateMatrix(k, cols, elementsB)
+
+	la := CreateLinAlg()
+	c := la.Dot(a, b)
+
+	if c.Rows != a.Rows || c.Cols != b.Cols {
+		t.Errorf("The dimensions of C matrix is wrong!: Got C(%d,%d), but expected C(%d,%d)", c.Rows, c.Cols, a.Rows, b.Cols)
+	}
+
+	i := rand.Intn(rows)
+	j := rand.Intn(cols)
+
+	var value float64
+	for k := 1; k <= a.Cols; k++ {
+		value = value + a.Get(i, k)*b.Get(k, j)
+	}
+
+	if c.Get(i, j) != value {
+		t.Errorf("Wrong value on C(i,j): Got %f but expected %f!", c.Get(i, j), value)
+	}
+
+}
