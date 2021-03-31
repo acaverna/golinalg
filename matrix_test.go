@@ -19,7 +19,7 @@ func TestCreate3by3Matrix(t *testing.T) {
 
 	matrix := CreateMatrix(rows, cols, elements)
 
-	if matrix.Rows != rows && matrix.Cols != cols {
+	if matrix.Rows != rows || matrix.Cols != cols {
 		t.Errorf("Expected matrix dimension rows: %d and cols: %d but got rows: %d and cols: %d", rows, cols, matrix.Rows, matrix.Cols)
 	}
 
