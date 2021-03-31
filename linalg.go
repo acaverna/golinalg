@@ -1,14 +1,17 @@
 package main
 
-import "log"
+import (
+	"log"
+	"math"
+)
 
-type linagl struct{}
+type linalg struct{}
 
-func CreateLinAlg() *linagl {
-	return &linagl{}
+func CreateLinAlg() *linalg {
+	return &linalg{}
 }
 
-func (la *linagl) Transpose(a *Matrix) *Matrix {
+func (la *linalg) Transpose(a *Matrix) *Matrix {
 
 	c := CreateZeroMatrix(a.Cols, a.Rows)
 
@@ -22,7 +25,7 @@ func (la *linagl) Transpose(a *Matrix) *Matrix {
 
 }
 
-func (la *linagl) Add(a *Matrix, b *Matrix) *Matrix {
+func (la *linalg) Add(a *Matrix, b *Matrix) *Matrix {
 
 	if a.Rows != b.Rows || a.Cols != b.Cols {
 		log.Panic("The matrices dimension are incompatibles")
@@ -40,7 +43,7 @@ func (la *linagl) Add(a *Matrix, b *Matrix) *Matrix {
 
 }
 
-func (la *linagl) Times(a *Matrix, b *Matrix) *Matrix {
+func (la *linalg) Times(a *Matrix, b *Matrix) *Matrix {
 
 	if a.Rows != b.Rows || a.Cols != b.Cols {
 		log.Panic("The matrices dimension are incompatibles")
@@ -58,7 +61,7 @@ func (la *linagl) Times(a *Matrix, b *Matrix) *Matrix {
 
 }
 
-func (la *linagl) STimes(s float64, a *Matrix) *Matrix {
+func (la *linalg) STimes(s float64, a *Matrix) *Matrix {
 
 	c := CreateZeroMatrix(a.Rows, a.Cols)
 
@@ -72,7 +75,7 @@ func (la *linagl) STimes(s float64, a *Matrix) *Matrix {
 
 }
 
-func (la *linagl) Dot(a *Matrix, b *Matrix) *Matrix {
+func (la *linalg) Dot(a *Matrix, b *Matrix) *Matrix {
 
 	if a.Cols != b.Rows {
 		log.Panic("The matrices dimension are incompatibles")
@@ -90,4 +93,54 @@ func (la *linagl) Dot(a *Matrix, b *Matrix) *Matrix {
 
 	return c
 
+}
+
+func (la *linalg) Gauss(a *Matrix) *Matrix {
+
+	c := CreateMatrix(a.Rows, a.Cols, a.Elements)
+
+	for i := 1; i <= c.Rows; i++ {
+
+		max := math.Inf(-1)
+		maxLineIndex := 0
+		for l := i; l <= c.Rows; l++ {
+			if c.Get(l, i) > max {
+				max = c.Get(l, i)
+				maxLineIndex = l
+			}
+		}
+		la.changeLinePosition(i, maxLineIndex, c)
+		if c.Get(i, i) == 0 {
+			log.Panicf("There is a zero value on main diagonal on line %d!", i)
+		}
+
+		for l := i + 1; l <= c.Rows; l++ {
+			k := -1.0 * c.Get(l, i) / c.Get(i, i)
+			la.multiplyLineByScalarAddOtherLine(i, l, k, c)
+		}
+
+	}
+
+	return c
+}
+
+func (la *linalg) changeLinePosition(lineA int, lineB int, a *Matrix) {
+	aux := 0.0
+	for j := 1; j <= a.Cols; j++ {
+		aux = a.Get(lineA, j)
+		a.Set(lineA, j, a.Get(lineB, j))
+		a.Set(lineB, j, aux)
+	}
+}
+
+func (la *linalg) multiplyLineByScalar(line int, scalar float64, a *Matrix) {
+	for j := 1; j <= a.Cols; j++ {
+		a.Set(line, j, scalar*a.Get(line, j))
+	}
+}
+
+func (la *linalg) multiplyLineByScalarAddOtherLine(lineA int, lineB int, scalar float64, a *Matrix) {
+	for j := 1; j <= a.Cols; j++ {
+		a.Set(lineB, j, scalar*a.Get(lineA, j)+a.Get(lineB, j))
+	}
 }

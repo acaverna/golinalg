@@ -195,3 +195,17 @@ func TestMatrixDot(t *testing.T) {
 	}
 
 }
+
+func TestMatrixGauss(t *testing.T) {
+
+	a := CreateMatrix(3, 3, []float64{1, 2, 3, 2, 5, 3, 1, 0, 8})
+	la := CreateLinAlg()
+	c := la.Gauss(a)
+
+	result := []float64{2, 5, 3, 0, -0.5, 1.5, 0, 0, -1}
+	for i := 0; i < len(c.Elements); i++ {
+		if c.Elements[i] != result[i] {
+			t.Errorf("Expected %f but got %f", result[i], c.Elements[i])
+		}
+	}
+}

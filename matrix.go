@@ -1,11 +1,13 @@
 package main
 
-import "log"
+import (
+	"log"
+)
 
 type Matrix struct {
 	Rows     int
 	Cols     int
-	elements []float64
+	Elements []float64
 }
 
 func CreateMatrix(rows int, cols int, elements []float64) *Matrix {
@@ -21,7 +23,7 @@ func CreateMatrix(rows int, cols int, elements []float64) *Matrix {
 	return &Matrix{
 		Rows:     rows,
 		Cols:     cols,
-		elements: elements,
+		Elements: elements,
 	}
 }
 
@@ -36,16 +38,17 @@ func CreateZeroMatrix(rows int, cols int) *Matrix {
 	return &Matrix{
 		Rows:     rows,
 		Cols:     cols,
-		elements: elements,
+		Elements: elements,
 	}
+
 }
 
 func (m *Matrix) Get(i int, j int) float64 {
-	return m.elements[m.getIndex(i, j)]
+	return m.Elements[m.getIndex(i, j)]
 }
 
 func (m *Matrix) Set(i int, j int, value float64) {
-	m.elements[m.getIndex(i, j)] = value
+	m.Elements[m.getIndex(i, j)] = value
 }
 
 func (m *Matrix) getIndex(i int, j int) int {
