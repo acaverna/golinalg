@@ -39,3 +39,21 @@ func (la *linagl) Add(a *Matrix, b *Matrix) *Matrix {
 	return c
 
 }
+
+func (la *linagl) Times(a *Matrix, b *Matrix) *Matrix {
+
+	if a.Rows != b.Rows || a.Cols != b.Cols {
+		log.Panic("The matrices dimension are incompatibles")
+	}
+
+	c := CreateZeroMatrix(a.Rows, a.Cols)
+
+	for i := 1; i <= c.Rows; i++ {
+		for j := 1; j <= c.Cols; j++ {
+			c.Set(i, j, a.Get(i, j)*b.Get(i, j))
+		}
+	}
+
+	return c
+
+}
