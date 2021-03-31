@@ -1,4 +1,4 @@
-package golinalg
+package main
 
 type Vector struct {
 	Dim      uint
