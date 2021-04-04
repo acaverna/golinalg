@@ -12,7 +12,7 @@ type Matrix struct {
 
 func CreateMatrix(rows int, cols int, elements []float64) *Matrix {
 
-	if rows < 0 || cols < 0 {
+	if rows <= 0 || cols <= 0 {
 		log.Panic("The rows and cols must be greater or equal to 1")
 	}
 
